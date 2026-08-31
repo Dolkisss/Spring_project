@@ -1,168 +1,165 @@
-# Reservation Service (Spring Boot)
+# 🏨 Reservation Service
 
-Backend REST service for managing room reservations. The application
-allows creating, updating, approving and cancelling reservations while
-enforcing business rules such as date validation and conflict detection.
+![Java](https://img.shields.io/badge/Java-17%2B-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-Framework-6DB33F)
+![Spring Data JPA](https://img.shields.io/badge/Spring%20Data-JPA-6DB33F)
+![Maven](https://img.shields.io/badge/Maven-Build-C71A36)
+![REST API](https://img.shields.io/badge/API-REST-blue)
 
-The project demonstrates a typical **Spring Boot backend architecture**
-using Controller → Service → Repository layers.
+**Reservation Service** is a Spring Boot REST application for managing room reservations.
 
-------------------------------------------------------------------------
+The service supports creating, updating, approving, and cancelling reservations while enforcing business rules such as date validation and reservation status transitions.
 
-## Features
+## ✨ Features
 
--   Create reservations
--   Update reservation details
--   Approve reservations
--   Cancel reservations
--   Prevent overlapping reservations for the same room
--   Input validation using Jakarta Validation
--   Global exception handling
--   Structured error responses
--   Logging with SLF4J
+- Create and manage room reservations
+- Update pending reservations
+- Approve reservations
+- Cancel reservations
+- Validate incoming requests with Jakarta Validation
+- Manage reservation lifecycle and status transitions
+- Global exception handling
+- Structured API error responses
+- Application logging with SLF4J
 
-------------------------------------------------------------------------
+## 🧱 Architecture
 
-## Tech Stack
+The application follows a traditional layered backend architecture with clear separation of responsibilities.
 
--   Java 17+
--   Spring Boot
--   Spring Web
--   Spring Data JPA
--   Hibernate
--   Jakarta Validation
--   Maven
+```mermaid
+flowchart LR
+    Client[Client]
 
-------------------------------------------------------------------------
+    Controller[Controller Layer]
+    Service[Service Layer]
+    Repository[Repository Layer]
+    Database[(Database)]
 
-## Architecture
-
-The project follows a layered backend architecture:
-
-Controller → Service → Repository → Database
+    Client -->|HTTP Request| Controller
+    Controller --> Service
+    Service --> Repository
+    Repository --> Database
+```
 
 ### Controller Layer
 
-Handles HTTP requests and exposes REST endpoints.
-
-Example endpoints:
-
-GET /res\
-GET /res/{id}\
-POST /res/post\
-PUT /res/{id}\
-POST /res/{id}/approve\
-DELETE /res/{id}/cancel
-
-------------------------------------------------------------------------
+Handles incoming HTTP requests and exposes the REST API.
 
 ### Service Layer
 
-Contains the core business logic:
+Contains the main business logic, including:
 
--   validation of reservation dates
--   reservation status management
--   enforcing allowed state transitions
--   conflict detection between reservations
-
-Business rules implemented:
-
--   startDate must not be after endDate
--   only PENDING reservations can be updated
--   APPROVED reservations cannot be cancelled
--   reservations for the same room cannot overlap
-
-------------------------------------------------------------------------
+- Reservation date validation
+- Reservation status management
+- Allowed state transitions
+- Reservation processing
 
 ### Repository Layer
 
-Implemented using **Spring Data JPA**.
+Provides persistence operations through **Spring Data JPA** and **Hibernate**.
 
-Provides:
+## ⚙️ Tech Stack
 
--   CRUD database operations
--   custom status update query
+| Category | Technologies |
+|---|---|
+| Language | Java 17+ |
+| Framework | Spring Boot |
+| Web | Spring Web |
+| Persistence | Spring Data JPA, Hibernate |
+| Validation | Jakarta Validation |
+| Logging | SLF4J |
+| Build Tool | Maven |
 
-Main entity:
+## 🔗 REST API
 
-ReservationEntity - id - userId - roomId - startDate - endDate - status
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/res` | Get all reservations |
+| `GET` | `/res/{id}` | Get reservation by ID |
+| `POST` | `/res/post` | Create a new reservation |
+| `PUT` | `/res/{id}` | Update a reservation |
+| `POST` | `/res/{id}/approve` | Approve a reservation |
+| `DELETE` | `/res/{id}/cancel` | Cancel a reservation |
 
-------------------------------------------------------------------------
+## 📋 Business Rules
 
-## Reservation Status
+The service enforces several rules to keep reservation data consistent.
 
-Reservations support the following states:
+### Date Validation
 
-PENDING\
-APPROVED\
+A reservation must have a valid date range:
+
+```text
+startDate <= endDate
+```
+
+### Reservation Status
+
+Each reservation can have one of the following statuses:
+
+```text
+PENDING
+APPROVED
 CANCELLED
+```
 
-Allowed transitions:
+Allowed status transitions:
 
-PENDING → APPROVED\
-PENDING → CANCELLED
+```text
+PENDING ──────► APPROVED
+    │
+    └─────────► CANCELLED
+```
 
-------------------------------------------------------------------------
+Only reservations with the `PENDING` status can be updated.
 
-## Validation
+Approved reservations cannot be cancelled.
 
-Request validation is implemented using **Jakarta Bean Validation**
-annotations such as:
+## ▶️ Quick Start
 
--   @NotNull
--   @FutureOrPresent
--   @Null (for ID during creation)
+### 1. Clone the repository
 
-------------------------------------------------------------------------
+```bash
+git clone https://github.com/Dolkisss/Reservation_project.git
+cd Reservation_project
+```
 
-## Error Handling
+### 2. Build the project
 
-Global exception handling is implemented using **@ControllerAdvice**.
+Linux / macOS:
 
-Handled exceptions include:
+```bash
+./mvnw clean install
+```
 
--   EntityNotFoundException
--   IllegalArgumentException
--   IllegalStateException
--   MethodArgumentNotValidException
--   generic server errors
+Windows:
 
-Example error response:
+```bash
+mvnw.cmd clean install
+```
 
-{ "message": "Bad request error", "detailedMessage": "StartDate must be
-earlier than EndDate!", "errorTime": "2026-03-10T15:32:01" }
+### 3. Run the application
 
-------------------------------------------------------------------------
+Linux / macOS:
 
-## Reservation Conflict Detection
+```bash
+./mvnw spring-boot:run
+```
 
-When approving a reservation, the system checks for date conflicts with
-already approved reservations for the same room.
+Windows:
 
-Two reservations conflict if:
+```bash
+mvnw.cmd spring-boot:run
+```
 
-startDate \< existing.endDate\
-AND\
-existing.startDate \< endDate
+The application starts at:
 
-Only APPROVED reservations are considered in this check.
-
-------------------------------------------------------------------------
-
-## Running the Application
-
-Clone repository:
-
-git clone https://github.com/Dolkisss/Reservation_project
-
-Build project:
-
-mvn clean install
-
-Run application:
-
-mvn spring-boot:run
-
-Application starts at:
-
+```text
 http://localhost:8080
+```
+
+## 👨‍💻 Author
+
+**Dolkisss**
+
+GitHub: [github.com/Dolkisss](https://github.com/Dolkisss)
