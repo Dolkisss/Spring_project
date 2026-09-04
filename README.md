@@ -1,41 +1,35 @@
 # 🏨 Reservation Service
 
-![Java](https://img.shields.io/badge/Java-17%2B-orange)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-Framework-6DB33F)
-![Spring Data JPA](https://img.shields.io/badge/Spring%20Data-JPA-6DB33F)
-![Maven](https://img.shields.io/badge/Maven-Build-C71A36)
-![REST API](https://img.shields.io/badge/API-REST-blue)
+**Reservation Service** — это REST-приложение на Spring Boot для управления бронированием помещений.
 
-**Reservation Service** is a Spring Boot REST application for managing room reservations.
+Сервис поддерживает создание, обновление, подтверждение и отмену бронирований с соблюдением бизнес-правил, таких как проверка корректности дат и допустимых переходов между статусами бронирования.
 
-The service supports creating, updating, approving, and cancelling reservations while enforcing business rules such as date validation and reservation status transitions.
+## ✨ Возможности
 
-## ✨ Features
+- Создание и управление бронированиями помещений
+- Обновление бронирований со статусом `PENDING`
+- Подтверждение бронирований
+- Отмена бронирований
+- Валидация входящих запросов с помощью Jakarta Validation
+- Управление жизненным циклом бронирования и переходами между статусами
+- Глобальная обработка исключений
+- Структурированные ответы API с информацией об ошибках
+- Логирование приложения с помощью SLF4J
 
-- Create and manage room reservations
-- Update pending reservations
-- Approve reservations
-- Cancel reservations
-- Validate incoming requests with Jakarta Validation
-- Manage reservation lifecycle and status transitions
-- Global exception handling
-- Structured API error responses
-- Application logging with SLF4J
+## 🧱 Архитектура
 
-## 🧱 Architecture
-
-The application follows a traditional layered backend architecture with clear separation of responsibilities.
+Приложение построено на основе традиционной многоуровневой backend-архитектуры с чётким разделением ответственности между слоями.
 
 ```mermaid
 flowchart LR
-    Client[Client]
+    Client[Клиент]
 
     Controller[Controller Layer]
     Service[Service Layer]
     Repository[Repository Layer]
-    Database[(Database)]
+    Database[(База данных)]
 
-    Client -->|HTTP Request| Controller
+    Client -->|HTTP-запрос| Controller
     Controller --> Service
     Service --> Repository
     Repository --> Database
@@ -43,59 +37,59 @@ flowchart LR
 
 ### Controller Layer
 
-Handles incoming HTTP requests and exposes the REST API.
+Обрабатывает входящие HTTP-запросы и предоставляет REST API.
 
 ### Service Layer
 
-Contains the main business logic, including:
+Содержит основную бизнес-логику, включая:
 
-- Reservation date validation
-- Reservation status management
-- Allowed state transitions
-- Reservation processing
+- Валидацию дат бронирования
+- Управление статусами бронирования
+- Проверку допустимых переходов между статусами
+- Обработку бронирований
 
 ### Repository Layer
 
-Provides persistence operations through **Spring Data JPA** and **Hibernate**.
+Обеспечивает операции сохранения и получения данных с использованием **Spring Data JPA** и **Hibernate**.
 
-## ⚙️ Tech Stack
+## ⚙️ Технологический стек
 
-| Category | Technologies |
-|---|---|
-| Language | Java 17+ |
-| Framework | Spring Boot |
+| Категория | Технологии |
+| --- | --- |
+| Язык | Java 17+ |
+| Фреймворк | Spring Boot |
 | Web | Spring Web |
-| Persistence | Spring Data JPA, Hibernate |
-| Validation | Jakarta Validation |
-| Logging | SLF4J |
-| Build Tool | Maven |
+| Работа с данными | Spring Data JPA, Hibernate |
+| Валидация | Jakarta Validation |
+| Логирование | SLF4J |
+| Система сборки | Maven |
 
 ## 🔗 REST API
 
-| Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/res` | Get all reservations |
-| `GET` | `/res/{id}` | Get reservation by ID |
-| `POST` | `/res/post` | Create a new reservation |
-| `PUT` | `/res/{id}` | Update a reservation |
-| `POST` | `/res/{id}/approve` | Approve a reservation |
-| `DELETE` | `/res/{id}/cancel` | Cancel a reservation |
+| Метод | Endpoint | Описание |
+| --- | --- | --- |
+| `GET` | `/res` | Получить все бронирования |
+| `GET` | `/res/{id}` | Получить бронирование по ID |
+| `POST` | `/res/post` | Создать новое бронирование |
+| `PUT` | `/res/{id}` | Обновить бронирование |
+| `POST` | `/res/{id}/approve` | Подтвердить бронирование |
+| `DELETE` | `/res/{id}/cancel` | Отменить бронирование |
 
-## 📋 Business Rules
+## 📋 Бизнес-правила
 
-The service enforces several rules to keep reservation data consistent.
+Сервис применяет ряд правил, обеспечивающих целостность и корректность данных бронирований.
 
-### Date Validation
+### Валидация дат
 
-A reservation must have a valid date range:
+Бронирование должно иметь корректный диапазон дат:
 
 ```text
 startDate <= endDate
 ```
 
-### Reservation Status
+### Статусы бронирования
 
-Each reservation can have one of the following statuses:
+Каждое бронирование может находиться в одном из следующих статусов:
 
 ```text
 PENDING
@@ -103,7 +97,7 @@ APPROVED
 CANCELLED
 ```
 
-Allowed status transitions:
+Допустимые переходы между статусами:
 
 ```text
 PENDING ──────► APPROVED
@@ -111,20 +105,20 @@ PENDING ──────► APPROVED
     └─────────► CANCELLED
 ```
 
-Only reservations with the `PENDING` status can be updated.
+Обновлять можно только бронирования со статусом `PENDING`.
 
-Approved reservations cannot be cancelled.
+Подтверждённые бронирования нельзя отменить.
 
-## ▶️ Quick Start
+## ▶️ Быстрый старт
 
-### 1. Clone the repository
+### 1. Клонирование репозитория
 
 ```bash
 git clone https://github.com/Dolkisss/Reservation_project.git
 cd Reservation_project
 ```
 
-### 2. Build the project
+### 2. Сборка проекта
 
 Linux / macOS:
 
@@ -138,7 +132,7 @@ Windows:
 mvnw.cmd clean install
 ```
 
-### 3. Run the application
+### 3. Запуск приложения
 
 Linux / macOS:
 
@@ -152,13 +146,13 @@ Windows:
 mvnw.cmd spring-boot:run
 ```
 
-The application starts at:
+После запуска приложение будет доступно по адресу:
 
 ```text
 http://localhost:8080
 ```
 
-## 👨‍💻 Author
+## 👨‍💻 Автор
 
 **Dolkisss**
 
